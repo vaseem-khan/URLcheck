@@ -1,20 +1,37 @@
 from urlparse import urlparse
 import re
+import urllib2
+from xml.dom import minidom
 
 def Tokenise(url):
-    token_word=re.split('\W+',url)
-    #print token_word
-    no_ele=sum_len=largest=0
-    for ele in token_word:
-    	l=len(ele)
-        sum_len+=l
-        if l>0:					## for empty element exclusion in average length
-        	no_ele+=1
-        if largest<l:
-        	largest=l
-    return [float(sum_len)/no_ele,no_ele,largest]
+	token_word=re.split('\W+',url)
+	#print token_word
+	no_ele=sum_len=largest=0
+	for ele in token_word:
+		l=len(ele)
+		sum_len+=l
+		if l>0:					## for empty element exclusion in average length
+			no_ele+=1
+		if largest<l:
+			largest=l
+	return [float(sum_len)/no_ele,no_ele,largest]
 
-def Laxical_feature_extract(url_input):
+def sitepopularity(host):
+	xmlpath='http://data.alexa.com/data?cli=10&dat=snbamz&url='+host
+	#print xmlpath
+	try:
+		xml= urllib2.urlopen(xmlpath)
+		dom =minidom.parse(xml)
+		#dom.getElementsByTagName('POPULARITY')[0].attributes['TEXT'].value
+		rank_host= dom.getElementsByTagName('REACH')[0].attributes['RANK'].value
+		#country=dom.getElementsByTagName('COUNTRY')[0].attributes['CODE'].value
+		rank_country= dom.getElementsByTagName('COUNTRY')[0].attributes['RANK'].value
+		return [rank_host,rank_country]
+	
+	except:
+		return [-1,-1]
+
+def feature_extract(url_input):
 	Feature={}
 	tokens_words=re.split('\W+',url_input)				#Extract bag of words stings delimited by (.,/,?,,=,-,_)
 	#print tokens_words,len(tokens_words)
@@ -27,6 +44,9 @@ def Laxical_feature_extract(url_input):
 	path=obj.path
 
 	Feature['URL']=url_input
+
+	Feature['rank_host'],Feature['rank_country'] =sitepopularity(host)
+	
 	Feature['host']=obj.netloc
 	Feature['path']=obj.path
 
@@ -41,9 +61,11 @@ def Laxical_feature_extract(url_input):
 	return Feature
 
 def main():
-	#url=raw_input("Enter URL")
 	url_input="https://www.google.co.in/search?q=split+python&oq=split+python&aqs=chrome41j0j7&sourceid=chrome&espvd=0&es_sm=3&ie=UTF-8"
-	feature=Laxical_feature_extract(url_input)
+	url_input=raw_input("Enter URL")
+	
+	feature=feature_extract(url_input)
+	
 	for i in feature:
 		print i+" : "+str(feature[i])
 
