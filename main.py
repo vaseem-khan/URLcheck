@@ -38,7 +38,7 @@ def sitepopularity(host):
 
 def Security_sensitive(tokens_words):
 
-    sec_sen_words=['confirm', 'account', 'banking', 'secure', 'ebayisapi', 'webscr', 'login', 'signin']
+    sec_sen_words=['confirm', 'account', 'banking', 'secure', 'ebayisapi', 'webscr', 'login', 'signin']
     cnt=0
     for ele in sec_sen_words:
         if(ele in tokens_words):
