@@ -2,10 +2,12 @@ from urlparse import urlparse
 import re
 import urllib2
 from xml.dom import minidom
-
+import csv
 
 def Tokenise(url):
 
+        if url=='':
+            return [0,0,0]
         token_word=re.split('\W+',url)
         #print token_word
         no_ele=sum_len=largest=0
@@ -16,24 +18,31 @@ def Tokenise(url):
                         no_ele+=1
                 if largest<l:
                         largest=l
+        
         return [float(sum_len)/no_ele,no_ele,largest]
 
+
+def find_ele_with_attribute(dom,ele,attribute):
+    for subelement in dom.getElementsByTagName(ele):
+        if subelement.hasAttribute(attribute):
+            return subelement.attributes[attribute].value
+    return -1
+        
 
 def sitepopularity(host):
 
         xmlpath='http://data.alexa.com/data?cli=10&dat=snbamz&url='+host
         #print xmlpath
         try:
-                xml= urllib2.urlopen(xmlpath)
-                dom =minidom.parse(xml)
-                #dom.getElementsByTagName('POPULARITY')[0].attributes['TEXT'].value
-                rank_host= dom.getElementsByTagName('REACH')[0].attributes['RANK'].value
-                #country=dom.getElementsByTagName('COUNTRY')[0].attributes['CODE'].value
-                rank_country= dom.getElementsByTagName('COUNTRY')[0].attributes['RANK'].value
-                return [rank_host,rank_country]
+            xml= urllib2.urlopen(xmlpath)
+            dom =minidom.parse(xml)
+            rank_host=find_ele_with_attribute(dom,'REACH','RANK')
+            #country=find_ele_with_attribute(dom,'REACH','RANK')
+            rank_country=find_ele_with_attribute(dom,'COUNTRY','RANK')
+            return [rank_host,rank_country]
 
         except:
-                return [-1,-1]
+            return [-1,-1]
 
 
 def Security_sensitive(tokens_words):
@@ -94,15 +103,26 @@ def feature_extract(url_input):
 
         return Feature
 
+def resultwriter(feature):
+    flag=True
+    with open('results.csv','wb') as f:
+        for item in feature:
+            w = csv.DictWriter(f, item[1].keys())
+            if flag:
+                w.writeheader()
+                flag=False
+            w.writerow(item[1])
+
+def process_URL_list():
+    feature=[]
+    with open("URL.txt") as file:
+        for line in file:
+            url=line.strip()
+            if url!='':
+                feature.append([url,feature_extract(url)]);
+    resultwriter(feature)
 
 def main():
-
-        url_input="https://www.google.co.in/search?q=split+python&oq=split+python&aqs=chrome41j0j7&sourceid=chrome&espvd=0&es_sm=3&ie=UTF-8"
-        #url_input=raw_input("Enter URL")
-
-        feature=feature_extract(url_input)
-
-        for i in feature:
-                print i+" : "+str(feature[i])
-
+        process_URL_list()
+           
 main()
