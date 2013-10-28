@@ -68,6 +68,33 @@ def Check_IPaddress(tokens_words):
             else:
                 cnt=0;
     return False
+    
+def web_content_features(url):
+    wfeatures={}
+    response = urllib2.urlopen(url)
+    source_code = response.read()
+    #print source_code[:500]
+    response.close()
+
+    wfeatures['html_cnt']=source_code.count('<html')
+    wfeatures['hlink_cnt']=source_code.count('<a href=')
+    wfeatures['iframe_cnt']=source_code.count('<iframe')
+    #suspicious javascript functions count
+    total_cnt=0
+    wfeatures['eval_cnt']=source_code.count('eval(')
+    total_cnt+=wfeatures['eval_cnt']
+    wfeatures['escape_cnt']=source_code.count('escape(')
+    total_cnt+=wfeatures['escape_cnt']
+    wfeatures['link_cnt']=source_code.count('link(')
+    total_cnt+=wfeatures['link_cnt']
+    wfeatures['underescape_cnt']=source_code.count('underescape(')
+    total_cnt+=wfeatures['underescape_cnt']
+    wfeatures['exec_cnt']=source_code.count('exec(')
+    total_cnt+=wfeatures['exec_cnt']
+    wfeatures['search_cnt']=source_code.count('search(')
+    total_cnt+=wfeatures['search_cnt']
+    wfeatures['total_jfun_cnt']=total_cnt
+    return wfeatures
 
 
 def feature_extract(url_input):
