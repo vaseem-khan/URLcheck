@@ -3,6 +3,10 @@ import re
 import urllib2
 from xml.dom import minidom
 import csv
+import pygeoip
+
+opener = urllib2.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 def Tokenise(url):
 
@@ -69,31 +73,53 @@ def Check_IPaddress(tokens_words):
                 cnt=0;
     return False
     
+def getASN(host):
+    try:
+        g = pygeoip.GeoIP('GeoIPASNum.dat')
+        asn=int(g.org_by_name(host).split()[0][2:])
+        return asn
+    except:
+        return  -1
+
+
 def web_content_features(url):
     wfeatures={}
-    response = urllib2.urlopen(url)
-    source_code = response.read()
-    #print source_code[:500]
-    response.close()
-
-    wfeatures['html_cnt']=source_code.count('<html')
-    wfeatures['hlink_cnt']=source_code.count('<a href=')
-    wfeatures['iframe_cnt']=source_code.count('<iframe')
-    #suspicious javascript functions count
     total_cnt=0
-    wfeatures['eval_cnt']=source_code.count('eval(')
-    total_cnt+=wfeatures['eval_cnt']
-    wfeatures['escape_cnt']=source_code.count('escape(')
-    total_cnt+=wfeatures['escape_cnt']
-    wfeatures['link_cnt']=source_code.count('link(')
-    total_cnt+=wfeatures['link_cnt']
-    wfeatures['underescape_cnt']=source_code.count('underescape(')
-    total_cnt+=wfeatures['underescape_cnt']
-    wfeatures['exec_cnt']=source_code.count('exec(')
-    total_cnt+=wfeatures['exec_cnt']
-    wfeatures['search_cnt']=source_code.count('search(')
-    total_cnt+=wfeatures['search_cnt']
-    wfeatures['total_jfun_cnt']=total_cnt
+    try:        
+        source_code = str(opener.open(url))
+        #print source_code[:500]
+
+        wfeatures['src_html_cnt']=source_code.count('<html')
+        wfeatures['src_hlink_cnt']=source_code.count('<a href=')
+        wfeatures['src_iframe_cnt']=source_code.count('<iframe')
+        #suspicioussrc_ javascript functions count
+
+        wfeatures['src_eval_cnt']=source_code.count('eval(')
+        wfeatures['src_escape_cnt']=source_code.count('escape(')
+        wfeatures['src_link_cnt']=source_code.count('link(')
+        wfeatures['src_underescape_cnt']=source_code.count('underescape(')
+        wfeatures['src_exec_cnt']=source_code.count('exec(')
+        wfeatures['src_search_cnt']=source_code.count('search(')
+        
+        for key in wfeatures:
+            total_cnt+=wfeatures[key]
+        wfeatures['src_total_jfun_cnt']=total_cnt
+    
+    except Exception, e:
+        print str(e)+" in dounloading page "+url 
+        default_val=-1
+        
+        wfeatures['src_html_cnt']=default_val
+        wfeatures['src_hlink_cnt']=default_val
+        wfeatures['src_iframe_cnt']=default_val
+        wfeatures['src_eval_cnt']=default_val
+        wfeatures['src_escape_cnt']=default_val
+        wfeatures['src_link_cnt']=default_val
+        wfeatures['src_underescape_cnt']=default_val
+        wfeatures['src_exec_cnt']=default_val
+        wfeatures['src_search_cnt']=default_val
+        wfeatures['src_total_jfun_cnt']=default_val    
+    
     return wfeatures
 
 
@@ -127,7 +153,19 @@ def feature_extract(url_input):
 
         Feature['sec_sen_word_cnt'] = Security_sensitive(tokens_words)
         Feature['IPaddress_presence'] = Check_IPaddress(tokens_words)
-
+        
+        # print host
+        # print getASN(host)
+        Feature['ASNno']=getASN(host)
+        
+        wfeatures=web_content_features(url_input)
+        
+        for key in wfeatures:
+            Feature[key]=wfeatures[key]
+        
+        #debug
+        # for key in Feature:
+        #     print key +':'+str(Feature[key])
         return Feature
 
 def resultwriter(feature):
@@ -146,6 +184,7 @@ def process_URL_list():
         for line in file:
             url=line.strip()
             if url!='':
+                print 'working on: '+url           #showoff 
                 feature.append([url,feature_extract(url)]);
     resultwriter(feature)
 
