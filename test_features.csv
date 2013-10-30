@@ -1,0 +1,4 @@
+token_count,avg_path_token,largest_path,largest_token,URL,sec_sen_word_cnt,IPaddress_presence,largest_domain,No_of_dots,host,Length_of_url,ASNno,rank_country,rank_host,path_token_count,domain_token_count,path,avg_token_length,avg_domain_token_length,Length_of_host
+3,0,0,6,http://google.com,0,False,6,1,google.com,17,15169,1,1,0,2,,4.333333333333333,4.5,10
+14,7.714285714285714,14,14,http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score,0,False,6,6,scikit-learn.org,115,3561,111760,184739,7,3,/stable/modules/generated/sklearn.metrics.accuracy_score.html,7.142857142857143,4.666666666666667,16
+5,4.5,6,11,http://eksotanilss.com/lembem.php,0,False,11,2,eksotanilss.com,33,-1,-1,-1,2,2,/lembem.php,5.4,7.0,15

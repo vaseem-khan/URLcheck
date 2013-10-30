@@ -1,0 +1,3 @@
+http://google.com
+http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score
+http://eksotanilss.com/lembem.php
