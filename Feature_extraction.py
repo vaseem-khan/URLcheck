@@ -8,6 +8,8 @@ import pygeoip
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
+nf=(2**32)-1
+
 def Tokenise(url):
 
         if url=='':
@@ -30,7 +32,7 @@ def find_ele_with_attribute(dom,ele,attribute):
     for subelement in dom.getElementsByTagName(ele):
         if subelement.hasAttribute(attribute):
             return subelement.attributes[attribute].value
-    return -1
+    return nf
         
 
 def sitepopularity(host):
@@ -46,7 +48,7 @@ def sitepopularity(host):
             return [rank_host,rank_country]
 
         except:
-            return [-1,-1]
+            return [nf,nf]
 
 
 def Security_sensitive(tokens_words):
@@ -81,7 +83,7 @@ def getASN(host):
         asn=int(g.org_by_name(host).split()[0][2:])
         return asn
     except:
-        return  -1
+        return  nf
 
 
 def web_content_features(url):
@@ -110,7 +112,7 @@ def web_content_features(url):
     
     except Exception, e:
         print "Error"+str(e)+" in downloading page "+url 
-        default_val=-1
+        default_val=nf
         
         wfeatures['src_html_cnt']=default_val
         wfeatures['src_hlink_cnt']=default_val
