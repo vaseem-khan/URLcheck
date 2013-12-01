@@ -68,12 +68,12 @@ def Check_IPaddress(tokens_words):
             cnt+=1
         else:
             if cnt>=4 :
-                return True
+                return 1
             else:
                 cnt=0;
     if cnt>=4:
-        return True
-    return False
+        return 1
+    return 0
     
 def getASN(host):
     try:
