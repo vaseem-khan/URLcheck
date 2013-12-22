@@ -1,4 +1,2 @@
-token_count,rank_host,src_underescape_cnt,rank_country,ASNno,sec_sen_word_cnt,avg_token_length,src_exec_cnt,src_total_jfun_cnt,No_of_dots,src_escape_cnt,src_link_cnt,Length_of_url,avg_path_token,IPaddress_presence,Length_of_host,URL,src_eval_cnt,host,avg_domain_token_length,path_token_count,path,src_html_cnt,src_search_cnt,largest_domain,domain_token_count,largest_path,src_iframe_cnt,largest_token,src_hlink_cnt
-3,1,0,1,15169,0,4.333333333333333,0,0,1,0,0,17,0,False,10,http://google.com,0,google.com,4.5,0,,0,0,6,2,0,0,6,0
-14,184739,0,111760,3561,0,7.142857142857143,0,0,6,0,0,115,7.714285714285714,False,16,http://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score,0,scikit-learn.org,4.666666666666667,7,/stable/modules/generated/sklearn.metrics.accuracy_score.html,0,0,6,3,14,0,14,0
-5,-1,-1,-1,-1,0,5.4,-1,-1,2,-1,-1,33,4.5,False,15,http://eksotanilss.com/lembem.php,-1,eksotanilss.com,7.0,2,/lembem.php,-1,-1,11,2,6,-1,11,-1
+safebrowsing,token_count,avg_path_token,largest_path,largest_token,URL,sec_sen_word_cnt,IPaddress_presence,largest_domain,No_of_dots,host,Length_of_url,ASNno,rank_country,rank_host,path_token_count,domain_token_count,path,avg_token_length,avg_domain_token_length,Length_of_host
+0,3,0,0,11,http://theguardian.com,0,0,11,1,theguardian.com,22,-1,16,127,0,2,,6.0,7.0,15
