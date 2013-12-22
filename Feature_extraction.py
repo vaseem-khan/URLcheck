@@ -1,6 +1,7 @@
 from urlparse import urlparse
 import re
 import urllib2
+import urllib
 from xml.dom import minidom
 import csv
 import pygeoip
@@ -8,7 +9,7 @@ import pygeoip
 opener = urllib2.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
-nf=(2**32)-1
+nf=-1
 
 def Tokenise(url):
 
@@ -24,8 +25,10 @@ def Tokenise(url):
                         no_ele+=1
                 if largest<l:
                         largest=l
-        
-        return [float(sum_len)/no_ele,no_ele,largest]
+        try:
+            return [float(sum_len)/no_ele,no_ele,largest]
+        except:
+            return [0,no_ele,largest]
 
 
 def find_ele_with_attribute(dom,ele,attribute):
@@ -61,6 +64,10 @@ def Security_sensitive(tokens_words):
 
     return cnt
 
+def exe_in_url(url):
+    if url.find('.exe')!=-1:
+        return 1
+    return 0
 
 def Check_IPaddress(tokens_words):
 
@@ -127,6 +134,40 @@ def web_content_features(url):
     
     return wfeatures
 
+def safebrowsing(url):
+    api_key = "ABQIAAAA8C6Tfr7tocAe04vXo5uYqRTEYoRzLFR0-nQ3fRl5qJUqcubbrw"
+    name = "URL_check"
+    ver = "1.0"
+
+    req = {}
+    req["client"] = name
+    req["apikey"] = api_key
+    req["appver"] = ver
+    req["pver"] = "3.0"
+    req["url"] = url #change to check type of url
+
+    try:
+        params = urllib.urlencode(req)
+        req_url = "https://sb-ssl.google.com/safebrowsing/api/lookup?"+params
+        res = urllib2.urlopen(req_url)
+        # print res.code
+        # print res.read()
+        if res.code==204:
+            # print "safe"
+            return 0
+        elif res.code==200:
+            # print "The queried URL is either phishing, malware or both, see the response body for the specific type."
+            return 1
+        elif res.code==204:
+            print "The requested URL is legitimate, no response body returned."
+        elif res.code==400:
+            print "Bad Request The HTTP request was not correctly formed."
+        elif res.code==401:
+            print "Not Authorized The apikey is not authorized"
+        else:
+            print "Service Unavailable The server cannot handle the request. Besides the normal server failures, it could also indicate that the client has been throttled by sending too many requests"
+    except:
+        return -1
 
 def feature_extract(url_input):
 
@@ -161,13 +202,14 @@ def feature_extract(url_input):
         
         # print host
         # print getASN(host)
+        # Feature['exe_in_url']=exe_in_url(url_input)
         Feature['ASNno']=getASN(host)
-        
-        wfeatures=web_content_features(url_input)
+        Feature['safebrowsing']=safebrowsing(url_input)
+        """wfeatures=web_content_features(url_input)
         
         for key in wfeatures:
             Feature[key]=wfeatures[key]
-        
+        """
         #debug
         # for key in Feature:
         #     print key +':'+str(Feature[key])
