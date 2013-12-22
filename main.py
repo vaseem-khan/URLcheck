@@ -35,11 +35,19 @@ def process_test_list(file_dest,output_dest):
                 feature.append([url,ret_dict]);
     resultwriter(feature,output_dest)
 
+#change
+def process_test_url(url,output_dest):
+    feature=[]
+    url=url.strip()
+    if url!='':
+        print 'working on: '+url           #showoff 
+        ret_dict=urlfeature.feature_extract(url)
+        feature.append([url,ret_dict]);
+    resultwriter(feature,output_dest)
+
 
 def main():
-        process_URL_list('URL.txt','url_features.csv')
+        #process_URL_list('URL.txt','url_features.csv')
         process_test_list("query.txt",'query_features.csv')
-        tr.train('url_features.csv','url_features.csv')         #arguments:(input_training feature,test/query traning features)
+        #tr.train('url_features.csv','url_features.csv')         #arguments:(input_training feature,test/query traning features)
         tr.train('url_features.csv','query_features.csv')      #testing with urls in query.txt
-
-main()
