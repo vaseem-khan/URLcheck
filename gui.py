@@ -18,7 +18,7 @@ E1.pack(side = RIGHT)
 def submitCallBack():
 	url=E1.get()
 	main.process_test_url(url,'test_features.csv')
-	return_ans = tr.train2('url_features.csv','test_features.csv')
+	return_ans = tr.gui_caller('url_features.csv','test_features.csv')
 	a=str(return_ans).split()
 	if int(a[1])==0:
 		tkMessageBox.showinfo( "URL Checker Result","The URL "+url+" is Benign")
@@ -26,8 +26,7 @@ def submitCallBack():
 		tkMessageBox.showinfo( "URL Checker Result","The URL "+url+" is Malicious")
 	else:
 		tkMessageBox.showinfo( "URL Checker Result","The URL "+url+" is Malware")
-   		
-   
+   		   
 B1 = Button(bottomframe, text ="Submit", command = submitCallBack)
 
 B1.pack()
