@@ -17,7 +17,7 @@ By employing learning algorithms, our scheme achieves better performance on gene
 
 URLs of the websites are separated into 3 classes:
 
-* Benign: Safe websites with normal services.
+* Benign: Safe websites with normal services
 * Spam: Website performs the act of attempting to flood the user with advertising or sites such as fake surveys and online dating etc.
 * Malware: Website created by attackers to disrupt computer operation, gather sensitive information, or gain access to private computer systems.
 
